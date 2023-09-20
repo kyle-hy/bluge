@@ -16,6 +16,7 @@ package searcher
 
 import (
 	"fmt"
+	"strings"
 	"unicode/utf8"
 
 	segment "github.com/blugelabs/bluge_segment_api"
@@ -42,7 +43,7 @@ func init() {
 
 var MaxFuzziness = 2
 
-func NewFuzzySearcher(indexReader search.Reader, term string,
+func NewFuzzySearcher(indexReader search.Reader, term string, freq int,
 	prefix, fuzziness int, field string, boost float64, scorer search.Scorer,
 	compScorer search.CompositeScorer, options search.SearcherOptions) (search.Searcher, error) {
 	if fuzziness > MaxFuzziness {
@@ -62,21 +63,21 @@ func NewFuzzySearcher(indexReader search.Reader, term string,
 			break
 		}
 	}
-	candidateTerms, termBoosts, err := findFuzzyCandidateTerms(indexReader, term, fuzziness,
+	candidateTerms, candFreqs, termBoosts, err := findFuzzyCandidateTerms(indexReader, term, fuzziness,
 		field, prefixTerm)
 	if err != nil {
 		return nil, err
 	}
 
-	return NewMultiTermSearcherIndividualBoost(indexReader, candidateTerms, termBoosts, field,
+	return NewMultiTermSearcherIndividualBoost(indexReader, candidateTerms, candFreqs, termBoosts, field,
 		boost, scorer, compScorer, options, true)
 }
 
 func findFuzzyCandidateTerms(indexReader search.Reader, term string,
-	fuzziness int, field, prefixTerm string) (terms []string, boosts []float64, err error) {
+	fuzziness int, field, prefixTerm string) (terms []string, freqs []int, boosts []float64, err error) {
 	automatons, err := getLevAutomatons(term, fuzziness)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	var prefixBeg, prefixEnd []byte
@@ -87,7 +88,7 @@ func findFuzzyCandidateTerms(indexReader search.Reader, term string,
 
 	fieldDict, err := indexReader.DictionaryIterator(field, automatons[0], prefixBeg, prefixEnd)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	defer func() {
 		if cerr := fieldDict.Close(); cerr != nil && err == nil {
@@ -100,8 +101,9 @@ func findFuzzyCandidateTerms(indexReader search.Reader, term string,
 	tfd, err := fieldDict.Next()
 	for err == nil && tfd != nil {
 		terms = append(terms, tfd.Term())
+		freqs = append(freqs, strings.Count(term, tfd.Term()))
 		if tooManyClauses(len(terms)) {
-			return nil, nil, tooManyClausesErr(field, len(terms))
+			return nil, nil, nil, tooManyClausesErr(field, len(terms))
 		}
 		// compute actual edit distance for this term
 		boost := 1.0
@@ -111,7 +113,7 @@ func findFuzzyCandidateTerms(indexReader search.Reader, term string,
 		boosts = append(boosts, boost)
 		tfd, err = fieldDict.Next()
 	}
-	return terms, boosts, err
+	return terms, freqs, boosts, err
 }
 
 func boostFromDistance(fuzziness int, automatons []segment.Automaton, dictTerm string, searchTermLen int) float64 {

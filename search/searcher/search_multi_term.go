@@ -20,20 +20,20 @@ import (
 	"github.com/blugelabs/bluge/search"
 )
 
-func NewMultiTermSearcher(indexReader search.Reader, terms []string,
+func NewMultiTermSearcher(indexReader search.Reader, terms []string, freqs []int,
 	field string, boost float64, scorer search.Scorer, compScorer search.CompositeScorer,
 	options search.SearcherOptions, limit bool) (
 	search.Searcher, error) {
 	if tooManyClauses(len(terms)) {
 		if optionsDisjunctionOptimizable(options) {
-			return optimizeMultiTermSearcher(indexReader, terms, nil, field, boost, scorer, options)
+			return optimizeMultiTermSearcher(indexReader, terms, freqs, nil, field, boost, scorer, options)
 		}
 		if limit {
 			return nil, tooManyClausesErr(field, len(terms))
 		}
 	}
 
-	qsearchers, err := makeBatchSearchers(indexReader, terms, nil, field, boost, scorer, options)
+	qsearchers, err := makeBatchSearchers(indexReader, terms, freqs, nil, field, boost, scorer, options)
 	if err != nil {
 		return nil, err
 	}
@@ -42,19 +42,19 @@ func NewMultiTermSearcher(indexReader search.Reader, terms []string,
 	return newMultiTermSearcherInternal(indexReader, qsearchers, compScorer, options, limit)
 }
 
-func NewMultiTermSearcherIndividualBoost(indexReader search.Reader, terms []string, termBoosts []float64,
+func NewMultiTermSearcherIndividualBoost(indexReader search.Reader, terms []string, freqs []int, termBoosts []float64,
 	field string, boost float64, scorer search.Scorer, compScorer search.CompositeScorer,
 	options search.SearcherOptions, limit bool) (search.Searcher, error) {
 	if tooManyClauses(len(terms)) {
 		if optionsDisjunctionOptimizable(options) {
-			return optimizeMultiTermSearcher(indexReader, terms, termBoosts, field, boost, scorer, options)
+			return optimizeMultiTermSearcher(indexReader, terms, freqs, termBoosts, field, boost, scorer, options)
 		}
 		if limit {
 			return nil, tooManyClausesErr(field, len(terms))
 		}
 	}
 
-	qsearchers, err := makeBatchSearchers(indexReader, terms, termBoosts, field, boost, scorer, options)
+	qsearchers, err := makeBatchSearchers(indexReader, terms, freqs, termBoosts, field, boost, scorer, options)
 	if err != nil {
 		return nil, err
 	}
@@ -102,27 +102,32 @@ func newMultiTermSearcherInternal(indexReader search.Reader,
 	return searcher, nil
 }
 
-func optimizeMultiTermSearcher(indexReader search.Reader, terms []string, termBoosts []float64,
+func optimizeMultiTermSearcher(indexReader search.Reader, terms []string, freqs []int, termBoosts []float64,
 	field string, boost float64, scorer search.Scorer, options search.SearcherOptions) (
 	search.Searcher, error) {
 	var finalSearcher search.Searcher
 	for len(terms) > 0 {
 		var batchTerms []string
+		var batchFreqs []int
 		var batchBoosts []float64
 		if len(terms) > DisjunctionMaxClauseCount {
 			batchTerms = terms[:DisjunctionMaxClauseCount]
+			batchFreqs = freqs[:DisjunctionMaxClauseCount]
 			terms = terms[DisjunctionMaxClauseCount:]
+			freqs = freqs[DisjunctionMaxClauseCount:]
 			if termBoosts != nil {
 				batchBoosts = termBoosts[:DisjunctionMaxClauseCount]
 				termBoosts = termBoosts[DisjunctionMaxClauseCount:]
 			}
 		} else {
 			batchTerms = terms
+			batchFreqs = freqs
 			terms = nil
+			freqs = nil
 			batchBoosts = termBoosts
 			termBoosts = nil
 		}
-		batch, err := makeBatchSearchers(indexReader, batchTerms, batchBoosts, field, boost, scorer, options)
+		batch, err := makeBatchSearchers(indexReader, batchTerms, batchFreqs, batchBoosts, field, boost, scorer, options)
 		if err != nil {
 			return nil, err
 		}
@@ -151,7 +156,7 @@ func optimizeMultiTermSearcher(indexReader search.Reader, terms []string, termBo
 	return finalSearcher, nil
 }
 
-func makeBatchSearchers(indexReader search.Reader, terms []string, termBoosts []float64, field string,
+func makeBatchSearchers(indexReader search.Reader, terms []string, freqs []int, termBoosts []float64, field string,
 	boost float64, scorer search.Scorer, options search.SearcherOptions) ([]search.Searcher, error) {
 	qsearchers := make([]search.Searcher, len(terms))
 	qsearchersClose := func() {
@@ -164,9 +169,9 @@ func makeBatchSearchers(indexReader search.Reader, terms []string, termBoosts []
 	for i, term := range terms {
 		var err error
 		if termBoosts != nil {
-			qsearchers[i], err = NewTermSearcher(indexReader, term, field, boost*termBoosts[i], scorer, options)
+			qsearchers[i], err = NewTermSearcher(indexReader, term, freqs[i], field, boost*termBoosts[i], scorer, options)
 		} else {
-			qsearchers[i], err = NewTermSearcher(indexReader, term, field, boost, scorer, options)
+			qsearchers[i], err = NewTermSearcher(indexReader, term, freqs[i], field, boost, scorer, options)
 		}
 		if err != nil {
 			qsearchersClose()
@@ -230,7 +235,7 @@ func makeBatchSearchersBytes(indexReader search.Reader, terms [][]byte, field st
 	}
 	for i, term := range terms {
 		var err error
-		qsearchers[i], err = NewTermSearcherBytes(indexReader, term, field, boost, scorer, options)
+		qsearchers[i], err = NewTermSearcherBytes(indexReader, term, 0, field, boost, scorer, options) // TODO
 		if err != nil {
 			qsearchersClose()
 			return nil, err

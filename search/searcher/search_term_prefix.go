@@ -15,6 +15,8 @@
 package searcher
 
 import (
+	"strings"
+
 	"github.com/blugelabs/bluge/search"
 )
 
@@ -35,9 +37,11 @@ func NewTermPrefixSearcher(indexReader search.Reader, prefix, field string,
 	}()
 
 	var terms []string
+	var freqs []int
 	tfd, err := fieldDict.Next()
 	for err == nil && tfd != nil {
 		terms = append(terms, tfd.Term())
+		freqs = append(freqs, strings.Count(field, tfd.Term())) // TODO 待确认正确性
 		if tooManyClauses(len(terms)) {
 			return nil, tooManyClausesErr(field, len(terms))
 		}
@@ -47,5 +51,5 @@ func NewTermPrefixSearcher(indexReader search.Reader, prefix, field string,
 		return nil, err
 	}
 
-	return NewMultiTermSearcher(indexReader, terms, field, boost, scorer, compScorer, options, true)
+	return NewMultiTermSearcher(indexReader, terms, freqs, field, boost, scorer, compScorer, options, true)
 }

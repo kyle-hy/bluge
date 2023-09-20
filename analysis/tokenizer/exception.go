@@ -15,6 +15,7 @@
 package tokenizer
 
 import (
+	"bytes"
 	"regexp"
 
 	"github.com/blugelabs/bluge/analysis"
@@ -59,6 +60,7 @@ func (t *ExceptionsTokenizer) Tokenize(input []byte) analysis.TokenStream {
 				// adjust token offsets
 				token.Start += currInput
 				token.End += currInput
+				token.Frequency = bytes.Count(input, token.Term)
 				rv = append(rv, token)
 			}
 		}
@@ -70,6 +72,7 @@ func (t *ExceptionsTokenizer) Tokenize(input []byte) analysis.TokenStream {
 			End:          end,
 			PositionIncr: 1,
 		}
+		token.Frequency = bytes.Count(input, token.Term)
 		rv = append(rv, token)
 		currInput = end
 	}
@@ -82,6 +85,7 @@ func (t *ExceptionsTokenizer) Tokenize(input []byte) analysis.TokenStream {
 			// adjust token offsets
 			token.Start += currInput
 			token.End += currInput
+			token.Frequency = bytes.Count(input, token.Term)
 			rv = append(rv, token)
 		}
 	}

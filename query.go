@@ -285,7 +285,9 @@ type DateRangeQuery struct {
 // NewDateRangeQuery creates a new Query for ranges
 // of date values.
 // Date strings are parsed using the DateTimeParser configured in the
-//  top-level config.QueryDateTimeParser
+//
+//	top-level config.QueryDateTimeParser
+//
 // Either, but not both endpoints can be nil.
 func NewDateRangeQuery(start, end time.Time) *DateRangeQuery {
 	return NewDateRangeInclusiveQuery(start, end, true, false)
@@ -294,7 +296,9 @@ func NewDateRangeQuery(start, end time.Time) *DateRangeQuery {
 // NewDateRangeInclusiveQuery creates a new Query for ranges
 // of date values.
 // Date strings are parsed using the DateTimeParser configured in the
-//  top-level config.QueryDateTimeParser
+//
+//	top-level config.QueryDateTimeParser
+//
 // Either, but not both endpoints can be nil.
 // startInclusive and endInclusive control inclusion of the endpoints.
 func NewDateRangeInclusiveQuery(start, end time.Time, startInclusive, endInclusive bool) *DateRangeQuery {
@@ -398,6 +402,7 @@ func isDatetimeCompatible(t time.Time) bool {
 
 type FuzzyQuery struct {
 	term      string
+	frequency int // hzf
 	prefix    int
 	fuzziness int
 	field     string
@@ -427,6 +432,16 @@ func (q *FuzzyQuery) Term() string {
 // PrefixLen returns the prefix match value
 func (q *FuzzyQuery) Prefix() int {
 	return q.prefix
+}
+
+// Frequency 查询内容的词频-hzf
+func (q *FuzzyQuery) Frequency() int {
+	return q.frequency
+}
+
+// SetFrequency 查询内容的词频-hzf
+func (q *FuzzyQuery) SetFrequency(freq int) {
+	q.frequency = freq
 }
 
 // Fuzziness returns the fuzziness of the query
@@ -468,7 +483,7 @@ func (q *FuzzyQuery) Searcher(i search.Reader, options search.SearcherOptions) (
 	if q.field == "" {
 		field = options.DefaultSearchField
 	}
-	return searcher.NewFuzzySearcher(i, q.term, q.prefix, q.fuzziness, field, q.boost.Value(),
+	return searcher.NewFuzzySearcher(i, q.term, q.frequency, q.prefix, q.fuzziness, field, q.boost.Value(),
 		q.scorer, similarity.NewCompositeSumScorer(), options)
 }
 
@@ -968,6 +983,7 @@ func (q *MatchQuery) Searcher(i search.Reader, options search.SearcherOptions) (
 			for i, token := range tokens {
 				query := NewFuzzyQuery(string(token.Term))
 				query.SetFuzziness(q.fuzziness)
+				query.SetFrequency(token.Frequency)
 				query.SetPrefix(q.prefix)
 				query.SetField(field)
 				query.SetBoost(q.boost.Value())
@@ -976,6 +992,7 @@ func (q *MatchQuery) Searcher(i search.Reader, options search.SearcherOptions) (
 		} else {
 			for i, token := range tokens {
 				tq := NewTermQuery(string(token.Term))
+				tq.SetFrequency(token.Frequency)
 				tq.SetField(field)
 				tq.SetBoost(q.boost.Value())
 				tqs[i] = tq
@@ -1273,10 +1290,11 @@ func (q *RegexpQuery) Validate() error {
 }
 
 type TermQuery struct {
-	term   string
-	field  string
-	boost  *boost
-	scorer search.Scorer
+	term      string
+	frequency int // -hzf
+	field     string
+	boost     *boost
+	scorer    search.Scorer
 }
 
 // NewTermQuery creates a new Query for finding an
@@ -1311,12 +1329,22 @@ func (q *TermQuery) Term() string {
 	return q.term
 }
 
+// Frequency 查询内容的词频-hzf
+func (q *TermQuery) Frequency() int {
+	return q.frequency
+}
+
+// SetFrequency 设置查询内容的词频-hzf
+func (q *TermQuery) SetFrequency(freq int) {
+	q.frequency = freq
+}
+
 func (q *TermQuery) Searcher(i search.Reader, options search.SearcherOptions) (search.Searcher, error) {
 	field := q.field
 	if q.field == "" {
 		field = options.DefaultSearchField
 	}
-	return searcher.NewTermSearcher(i, q.term, field, q.boost.Value(), q.scorer, options)
+	return searcher.NewTermSearcher(i, q.term, q.frequency, field, q.boost.Value(), q.scorer, options)
 }
 
 type TermRangeQuery struct {

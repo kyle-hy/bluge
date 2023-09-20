@@ -97,7 +97,7 @@ func optimizeCompositeSearcher(optimizationKind string,
 	}
 
 	return newTermSearcherFromReader(indexReader, optimized,
-		[]byte(optimizationKind), "*", 1.0, similarity.ConstantScorer(1), options)
+		[]byte(optimizationKind), 0, "*", 1.0, similarity.ConstantScorer(1), options) // TODO
 }
 
 func tooManyClauses(count int) bool {

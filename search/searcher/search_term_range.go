@@ -15,6 +15,8 @@
 package searcher
 
 import (
+	"strings"
+
 	"github.com/blugelabs/bluge/search"
 )
 
@@ -42,9 +44,11 @@ func NewTermRangeSearcher(indexReader search.Reader,
 	}()
 
 	var terms []string
+	var freqs []int
 	tfd, err := fieldDict.Next()
 	for err == nil && tfd != nil {
 		terms = append(terms, tfd.Term())
+		freqs = append(freqs, strings.Count(field, tfd.Term())) // TODO 待确认正确性
 		tfd, err = fieldDict.Next()
 	}
 	if err != nil {
@@ -63,5 +67,5 @@ func NewTermRangeSearcher(indexReader search.Reader,
 		}
 	}
 
-	return NewMultiTermSearcher(indexReader, terms, field, boost, scorer, compScorer, options, true)
+	return NewMultiTermSearcher(indexReader, terms, freqs, field, boost, scorer, compScorer, options, true)
 }

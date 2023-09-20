@@ -23,25 +23,25 @@ import (
 )
 
 func TestFuzzySearch(t *testing.T) {
-	fuzzySearcherbeet, err := NewFuzzySearcher(baseTestIndexReader, "beet", 0, 1, "desc",
+	fuzzySearcherbeet, err := NewFuzzySearcher(baseTestIndexReader, "beet", 0, 0, 1, "desc",
 		1.0, nil, similarity.NewCompositeSumScorer(), testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	fuzzySearcherdouches, err := NewFuzzySearcher(baseTestIndexReader, "douches", 0, 2, "desc",
+	fuzzySearcherdouches, err := NewFuzzySearcher(baseTestIndexReader, "douches", 0, 0, 2, "desc",
 		1.0, nil, similarity.NewCompositeSumScorer(), testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	fuzzySearcheraplee, err := NewFuzzySearcher(baseTestIndexReader, "aplee", 0, 2, "desc",
+	fuzzySearcheraplee, err := NewFuzzySearcher(baseTestIndexReader, "aplee", 0, 0, 2, "desc",
 		1.0, nil, similarity.NewCompositeSumScorer(), testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	fuzzySearcherprefix, err := NewFuzzySearcher(baseTestIndexReader, "water", 3, 2, "desc",
+	fuzzySearcherprefix, err := NewFuzzySearcher(baseTestIndexReader, "water", 0, 3, 2, "desc",
 		1.0, nil, similarity.NewCompositeSumScorer(), testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
@@ -133,13 +133,13 @@ func TestFuzzySearch(t *testing.T) {
 }
 
 func TestFuzzySearchLimitErrors(t *testing.T) {
-	_, err := NewFuzzySearcher(nil, "water", 3, 3, "desc",
+	_, err := NewFuzzySearcher(nil, "water", 0, 3, 3, "desc",
 		1.0, nil, similarity.NewCompositeSumScorer(), testSearchOptions)
 	if err == nil {
 		t.Fatal("`fuzziness exceeds max (2)` error expected")
 	}
 
-	_, err = NewFuzzySearcher(nil, "water", 3, -1, "desc",
+	_, err = NewFuzzySearcher(nil, "water", 0, 3, -1, "desc",
 		1.0, nil, similarity.NewCompositeSumScorer(), testSearchOptions)
 	if err == nil {
 		t.Fatal("`invalid fuzziness, negative` error expected")

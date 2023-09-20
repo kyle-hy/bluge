@@ -15,6 +15,7 @@
 package tokenizer
 
 import (
+	"bytes"
 	"unicode/utf8"
 
 	"github.com/blugelabs/bluge/analysis"
@@ -45,13 +46,15 @@ func (c *CharacterTokenizer) Tokenize(input []byte) analysis.TokenStream {
 		} else {
 			if end-start > 0 {
 				// build token
-				rv = append(rv, &analysis.Token{
+				tk := &analysis.Token{
 					Term:         input[start:end],
 					Start:        start,
 					End:          end,
 					PositionIncr: 1,
 					Type:         analysis.AlphaNumeric,
-				})
+				}
+				tk.Frequency = bytes.Count(input, tk.Term)
+				rv = append(rv, tk)
 			}
 			start = offset + size
 			end = start

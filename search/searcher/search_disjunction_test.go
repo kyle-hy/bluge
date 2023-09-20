@@ -23,11 +23,11 @@ import (
 )
 
 func TestDisjunctionSearch(t *testing.T) {
-	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,11 +36,11 @@ func TestDisjunctionSearch(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	martyTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func TestDisjunctionSearch(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	raviTermSearcher, err := NewTermSearcher(baseTestIndexReader, "ravi", "name", 1.0, nil, testSearchOptions)
+	raviTermSearcher, err := NewTermSearcher(baseTestIndexReader, "ravi", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -132,11 +132,11 @@ func TestDisjunctionSearch(t *testing.T) {
 }
 
 func TestDisjunctionAdvance(t *testing.T) {
-	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -165,15 +165,15 @@ func TestDisjunctionSearchTooMany(t *testing.T) {
 		DisjunctionMaxClauseCount = 0
 	}()
 
-	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	steveTermSearcher, err := NewTermSearcher(baseTestIndexReader, "steve", "name", 1.0, nil, testSearchOptions)
+	steveTermSearcher, err := NewTermSearcher(baseTestIndexReader, "steve", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -16,6 +16,7 @@ package searcher
 
 import (
 	"regexp/syntax"
+	"strings"
 
 	"github.com/blevesearch/vellum/regexp"
 	"github.com/blugelabs/bluge/search"
@@ -42,17 +43,19 @@ func NewRegexpStringSearcher(indexReader search.Reader, pattern, field string,
 	}()
 
 	var candidateTerms []string
+	var candFreqs []int
 
 	tfd, err := fieldDict.Next()
 	for err == nil && tfd != nil {
 		candidateTerms = append(candidateTerms, tfd.Term())
+		candFreqs = append(candFreqs, strings.Count(field, tfd.Term())) // TODO 待确认正确性
 		tfd, err = fieldDict.Next()
 	}
 	if err != nil {
 		return nil, err
 	}
 
-	return NewMultiTermSearcher(indexReader, candidateTerms, field, boost, scorer,
+	return NewMultiTermSearcher(indexReader, candidateTerms, candFreqs, field, boost, scorer,
 		compScorer, options, true)
 }
 

@@ -24,7 +24,7 @@ import (
 
 func TestBooleanSearch(t *testing.T) {
 	// test 0
-	beerTermSearcher, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,11 +32,11 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +44,7 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	steveTermSearcher, err := NewTermSearcher(baseTestIndexReader, "steve", "name", 1.0, nil, testSearchOptions)
+	steveTermSearcher, err := NewTermSearcher(baseTestIndexReader, "steve", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,11 +58,11 @@ func TestBooleanSearch(t *testing.T) {
 	}
 
 	// test 1
-	martyTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	steveTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "steve", "name", 1.0, nil, testSearchOptions)
+	steveTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "steve", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -84,7 +84,7 @@ func TestBooleanSearch(t *testing.T) {
 	}
 
 	// test 2
-	steveTermSearcher3, err := NewTermSearcher(baseTestIndexReader, "steve", "name", 1.0, nil, testSearchOptions)
+	steveTermSearcher3, err := NewTermSearcher(baseTestIndexReader, "steve", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -98,7 +98,7 @@ func TestBooleanSearch(t *testing.T) {
 	}
 
 	// test 3
-	beerTermSearcher4, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher4, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -106,7 +106,7 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	steveTermSearcher4, err := NewTermSearcher(baseTestIndexReader, "steve", "name", 1.0, nil, testSearchOptions)
+	steveTermSearcher4, err := NewTermSearcher(baseTestIndexReader, "steve", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,7 +120,7 @@ func TestBooleanSearch(t *testing.T) {
 	}
 
 	// test 4
-	beerTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,11 +128,11 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	steveTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "steve", "name", 1.0, nil, testSearchOptions)
+	steveTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "steve", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	martyTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -146,7 +146,7 @@ func TestBooleanSearch(t *testing.T) {
 	}
 
 	// test 5
-	beerTermSearcher6, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher6, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -154,11 +154,11 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	martyTermSearcher6, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher6, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher6, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher6, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +172,7 @@ func TestBooleanSearch(t *testing.T) {
 	}
 
 	// test 6
-	beerTermSearcher7, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher7, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -184,7 +184,7 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	martyTermSearcher7, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 5.0, nil, testSearchOptions)
+	martyTermSearcher7, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -194,7 +194,7 @@ func TestBooleanSearch(t *testing.T) {
 	}
 
 	// test 7
-	beerTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -202,11 +202,11 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	martyTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 1.0, nil, testSearchOptions)
+	martyTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 1.0, nil, testSearchOptions)
+	dustinTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -214,7 +214,7 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	steveTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "steve", "name", 1.0, nil, testSearchOptions)
+	steveTermSearcher8, err := NewTermSearcher(baseTestIndexReader, "steve", 0, "name", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -226,7 +226,7 @@ func TestBooleanSearch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	dustinTermSearcher8a, err := NewTermSearcher(baseTestIndexReader, "dustin", "name", 5.0, nil, testSearchOptions)
+	dustinTermSearcher8a, err := NewTermSearcher(baseTestIndexReader, "dustin", 0, "name", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}

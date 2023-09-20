@@ -43,8 +43,9 @@ type Token struct {
 	Start int
 
 	// End specifies the byte offset of the end of the term in the field.
-	End  int
-	Term []byte
+	End       int
+	Term      []byte
+	Frequency int // 查询内容的词频-hzf
 
 	// PositionIncr specifies the position of this token relative to the previous.
 	PositionIncr int

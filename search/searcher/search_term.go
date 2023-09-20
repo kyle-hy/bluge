@@ -25,21 +25,22 @@ type TermSearcher struct {
 	options     search.SearcherOptions
 	scorer      search.Scorer
 	queryTerm   string
+	queryFreq   int // hzf
 }
 
-func NewTermSearcher(indexReader search.Reader, term, field string, boost float64, scorer search.Scorer,
+func NewTermSearcher(indexReader search.Reader, term string, queryFreq int, field string, boost float64, scorer search.Scorer,
 	options search.SearcherOptions) (*TermSearcher, error) {
-	return NewTermSearcherBytes(indexReader, []byte(term), field, boost, scorer, options)
+	return NewTermSearcherBytes(indexReader, []byte(term), queryFreq, field, boost, scorer, options)
 }
 
-func NewTermSearcherBytes(indexReader search.Reader, term []byte, field string, boost float64, scorer search.Scorer,
+func NewTermSearcherBytes(indexReader search.Reader, term []byte, queryFreq int, field string, boost float64, scorer search.Scorer,
 	options search.SearcherOptions) (*TermSearcher, error) {
 	needFreqNorm := options.Score != "none"
 	reader, err := indexReader.PostingsIterator(term, field, needFreqNorm, needFreqNorm, options.IncludeTermVectors)
 	if err != nil {
 		return nil, err
 	}
-	return newTermSearcherFromReader(indexReader, reader, term, field, boost, scorer, options)
+	return newTermSearcherFromReader(indexReader, reader, term, queryFreq, field, boost, scorer, options)
 }
 
 type termStatsWrapper struct {
@@ -51,7 +52,7 @@ func (t *termStatsWrapper) DocumentFrequency() uint64 {
 }
 
 func newTermSearcherFromReader(indexReader search.Reader, reader segment.PostingsIterator,
-	term []byte, field string, boost float64, scorer search.Scorer, options search.SearcherOptions) (*TermSearcher, error) {
+	term []byte, queryFreq int, field string, boost float64, scorer search.Scorer, options search.SearcherOptions) (*TermSearcher, error) {
 	if scorer == nil {
 		collStats, err := indexReader.CollectionStats(field)
 		if err != nil {
@@ -65,6 +66,7 @@ func newTermSearcherFromReader(indexReader search.Reader, reader segment.Posting
 		scorer:      scorer,
 		options:     options,
 		queryTerm:   string(term),
+		queryFreq:   queryFreq,
 	}, nil
 }
 
@@ -137,11 +139,17 @@ func (s *TermSearcher) buildDocumentMatch(ctx *search.Context, termMatch segment
 	rv.SetReader(s.indexReader)
 	rv.Number = termMatch.Number()
 
+	// 按查询内容的词频作为上限
+	freq := termMatch.Frequency()
+	if s.queryFreq > 0 && freq > s.queryFreq {
+		freq = s.queryFreq
+	}
+
 	if s.options.Explain {
-		rv.Explanation = s.scorer.Explain(termMatch.Frequency(), termMatch.Norm())
+		rv.Explanation = s.scorer.Explain(freq, termMatch.Norm())
 		rv.Score = rv.Explanation.Value
 	} else {
-		rv.Score = s.scorer.Score(termMatch.Frequency(), termMatch.Norm())
+		rv.Score = s.scorer.Score(freq, termMatch.Norm())
 	}
 
 	if len(termMatch.Locations()) > 0 {

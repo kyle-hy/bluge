@@ -24,11 +24,11 @@ import (
 
 func TestConjunctionSearch(t *testing.T) {
 	// test 0
-	beerTermSearcher, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", "name", 5.0, nil, testSearchOptions)
+	martyTermSearcher, err := NewTermSearcher(baseTestIndexReader, "marty", 0, "name", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -38,11 +38,11 @@ func TestConjunctionSearch(t *testing.T) {
 	}
 
 	// test 1
-	angstTermSearcher, err := NewTermSearcher(baseTestIndexReader, "angst", "desc", 1.0, nil, testSearchOptions)
+	angstTermSearcher, err := NewTermSearcher(baseTestIndexReader, "angst", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	beerTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,11 +52,11 @@ func TestConjunctionSearch(t *testing.T) {
 	}
 
 	// test 2
-	beerTermSearcher3, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher3, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	jackTermSearcher, err := NewTermSearcher(baseTestIndexReader, "jack", "name", 5.0, nil, testSearchOptions)
+	jackTermSearcher, err := NewTermSearcher(baseTestIndexReader, "jack", 0, "name", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,11 +66,11 @@ func TestConjunctionSearch(t *testing.T) {
 	}
 
 	// test 3
-	beerTermSearcher4, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 1.0, nil, testSearchOptions)
+	beerTermSearcher4, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	misterTermSearcher, err := NewTermSearcher(baseTestIndexReader, "mister", "title", 5.0, nil, testSearchOptions)
+	misterTermSearcher, err := NewTermSearcher(baseTestIndexReader, "mister", 0, "title", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,11 +80,11 @@ func TestConjunctionSearch(t *testing.T) {
 	}
 
 	// test 4
-	couchbaseTermSearcher, err := NewTermSearcher(baseTestIndexReader, "couchbase", "street", 1.0, nil, testSearchOptions)
+	couchbaseTermSearcher, err := NewTermSearcher(baseTestIndexReader, "couchbase", 0, "street", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	misterTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "mister", "title", 5.0, nil, testSearchOptions)
+	misterTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "mister", 0, "title", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -94,15 +94,15 @@ func TestConjunctionSearch(t *testing.T) {
 	}
 
 	// test 5
-	beerTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "beer", "desc", 5.0, nil, testSearchOptions)
+	beerTermSearcher5, err := NewTermSearcher(baseTestIndexReader, "beer", 0, "desc", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	couchbaseTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "couchbase", "street", 1.0, nil, testSearchOptions)
+	couchbaseTermSearcher2, err := NewTermSearcher(baseTestIndexReader, "couchbase", 0, "street", 1.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
-	misterTermSearcher3, err := NewTermSearcher(baseTestIndexReader, "mister", "title", 5.0, nil, testSearchOptions)
+	misterTermSearcher3, err := NewTermSearcher(baseTestIndexReader, "mister", 0, "title", 5.0, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}

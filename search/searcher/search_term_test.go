@@ -75,7 +75,7 @@ func TestTermSearcher(t *testing.T) {
 		indexReader.add(doc)
 	}
 
-	searcher, err := NewTermSearcher(indexReader, queryTerm, queryField, queryBoost, nil, testSearchOptions)
+	searcher, err := NewTermSearcher(indexReader, queryTerm, 0, queryField, queryBoost, nil, testSearchOptions)
 	if err != nil {
 		t.Fatal(err)
 	}
