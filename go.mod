@@ -23,6 +23,6 @@ require (
 	gonum.org/v1/gonum v0.7.0 // indirect
 )
 
-replace github.com/blugelabs/ice => ../ice
+replace github.com/blugelabs/ice => github.com/zinclabs/ice v1.1.3
 
 replace github.com/blugelabs/bluge_segment_api => github.com/zinclabs/bluge_segment_api v1.0.0
