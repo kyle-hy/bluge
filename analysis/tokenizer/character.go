@@ -15,7 +15,6 @@
 package tokenizer
 
 import (
-	"bytes"
 	"unicode/utf8"
 
 	"github.com/blugelabs/bluge/analysis"
@@ -53,7 +52,6 @@ func (c *CharacterTokenizer) Tokenize(input []byte) analysis.TokenStream {
 					PositionIncr: 1,
 					Type:         analysis.AlphaNumeric,
 				}
-				tk.Frequency = bytes.Count(input, tk.Term)
 				rv = append(rv, tk)
 			}
 			start = offset + size
@@ -72,5 +70,7 @@ func (c *CharacterTokenizer) Tokenize(input []byte) analysis.TokenStream {
 			Type:         analysis.AlphaNumeric,
 		})
 	}
+
+	rv.Frequency()
 	return rv
 }

@@ -15,8 +15,6 @@
 package tokenizer
 
 import (
-	"bytes"
-
 	"github.com/blevesearch/segment"
 
 	"github.com/blugelabs/bluge/analysis"
@@ -77,7 +75,6 @@ func (rt *UnicodeTokenizer) Tokenize(input []byte) analysis.TokenStream {
 			token.End = end
 			token.PositionIncr = 1
 			token.Type = convertType(segmenter.Type())
-			token.Frequency = bytes.Count(input, token.Term)
 
 			if len(rv) >= cap(rv) { // When rv is full, save it into rvx.
 				rvx = append(rvx, rv)
@@ -104,9 +101,12 @@ func (rt *UnicodeTokenizer) Tokenize(input []byte) analysis.TokenStream {
 		for _, r := range rvx {
 			rall = append(rall, r...)
 		}
-		return append(rall, rv...)
+		rall = append(rall, rv...)
+		rall.Frequency()
+		return rall
 	}
 
+	rv.Frequency()
 	return rv
 }
 

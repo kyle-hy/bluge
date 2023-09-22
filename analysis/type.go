@@ -59,6 +59,17 @@ func (t *Token) String() string {
 
 type TokenStream []*Token
 
+// Frequency 统计token在内容的词频
+func (ts TokenStream) Frequency() {
+	m := make(map[string]int, len(ts))
+	for _, t := range ts {
+		m[string(t.Term)]++
+	}
+	for _, t := range ts {
+		t.Frequency = m[string(t.Term)]
+	}
+}
+
 // A Tokenizer splits an input string into tokens, the usual behavior being to
 // map words to tokens.
 type Tokenizer interface {

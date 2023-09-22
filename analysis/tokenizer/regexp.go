@@ -15,7 +15,6 @@
 package tokenizer
 
 import (
-	"bytes"
 	"regexp"
 	"strconv"
 
@@ -47,10 +46,10 @@ func (rt *RegexpTokenizer) Tokenize(input []byte) analysis.TokenStream {
 				PositionIncr: 1,
 				Type:         detectTokenType(matchBytes),
 			}
-			token.Frequency = bytes.Count(input, token.Term)
 			rv = append(rv, &token)
 		}
 	}
+	rv.Frequency()
 	return rv
 }
 
